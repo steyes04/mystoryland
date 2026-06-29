@@ -25,7 +25,8 @@ let state = {
   childName: '',
   childAge: '',
   childGender: 'girl',
-  previewPage: 0
+  previewPage: 0,
+  photoDataUrl: null
 };
 
 const stories = [
@@ -85,6 +86,17 @@ function openOrder(bookId) {
 function closeModal() {
   document.getElementById('order-modal').classList.remove('open');
   document.body.style.overflow = '';
+  // Reset photo
+  state.photoDataUrl = null;
+  const drop = document.getElementById('photo-drop');
+  if (drop) {
+    drop.innerHTML = `<div class="icon">📷</div><p>Tap to upload a clear face photo</p><small>JPG or PNG · max 10MB</small>`;
+    drop.style.background = '';
+    drop.style.borderColor = '';
+    drop.style.borderStyle = '';
+  }
+  const input = document.getElementById('photo-file-input');
+  if (input) input.value = '';
 }
 
 function goToStep(n) {
@@ -163,6 +175,7 @@ async function placeOrder() {
     child_name: state.childName, child_age: parseInt(state.childAge),
     child_gender: state.childGender, book_theme: b.title,
     amount: b.price + 25, status: 'pending',
+    photo_url: state.photoDataUrl ? '[uploaded]' : '',
     created_at: new Date().toISOString()
   };
 
@@ -183,11 +196,52 @@ async function placeOrder() {
   goToStep(4);
 }
 
-/* ── Photo upload fake ─── */
+/* ── Photo upload (real file picker) ─── */
 function fakeUpload(zone) {
-  zone.innerHTML = `<div class="icon">✅</div><p>Photo uploaded!</p><small>Tap to change</small>`;
-  zone.style.background = 'var(--teal-l)';
-  zone.style.borderColor = 'var(--teal)';
+  // Create a hidden file input and trigger it
+  let input = document.getElementById('photo-file-input');
+  if (!input) {
+    input = document.createElement('input');
+    input.type = 'file';
+    input.id = 'photo-file-input';
+    input.accept = 'image/jpeg,image/png,image/webp';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      if (!file) return;
+
+      // Validate size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Photo is too large. Please use an image under 10MB.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        state.photoDataUrl = dataUrl;
+
+        const dropZone = document.getElementById('photo-drop');
+        dropZone.innerHTML = `
+          <img src="${dataUrl}" alt="Child photo" style="
+            width: 80px; height: 80px; border-radius: 50%;
+            object-fit: cover; border: 3px solid var(--purple);
+            margin-bottom: 8px; display: block; margin: 0 auto 8px;
+          ">
+          <p style="color:var(--teal);font-weight:700">Photo uploaded!</p>
+          <small style="color:var(--text-3)">${file.name} · ${(file.size/1024).toFixed(0)}KB · Tap to change</small>
+        `;
+        dropZone.style.background = 'var(--teal-l)';
+        dropZone.style.borderColor = 'var(--teal)';
+        dropZone.style.borderStyle = 'solid';
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  input.value = ''; // reset so same file can be re-selected
+  input.click();
 }
 
 /* ── Init ─── */
