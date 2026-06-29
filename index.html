@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyStoryLand — Personalized Storybooks for Kids in UAE</title>
+  <meta name="description" content="AI-powered personalized storybooks for children. Your child becomes the hero. Delivered across UAE in 7 days.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+</head>
+<body>
+
+<!-- ── Nav ─────────────────────────────────── -->
+<nav class="nav">
+  <a class="logo" href="#">
+    <div class="logo-badge">📖</div>
+    MyStoryLand
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="#" data-scroll="how-it-works">How it works</a>
+    <a class="nav-link" href="#" data-scroll="books">Our books</a>
+    <a class="nav-link" href="#" data-scroll="reviews">Reviews</a>
+    <button class="btn btn-primary" onclick="document.getElementById('books').scrollIntoView({behavior:'smooth'})">
+      <i class="ti ti-book-2"></i> Create your book
+    </button>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <i class="ti ti-wand" style="font-size:14px"></i>
+    AI-personalised storybooks · UAE delivery
+  </div>
+  <div class="hero-float">📖 ✨ 👑</div>
+  <h1>Your child becomes the hero of their own story</h1>
+  <p>We craft a beautiful illustrated book starring your child — their name, their face, their adventure. Delivered to your door in 7 days.</p>
+  <div class="hero-actions">
+    <button class="btn btn-primary" style="font-size:15px;padding:12px 28px" onclick="document.getElementById('books').scrollIntoView({behavior:'smooth'})">
+      <i class="ti ti-stars"></i> Start creating
+    </button>
+    <button class="btn btn-outline" style="font-size:15px;padding:12px 28px" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})">
+      See how it works
+    </button>
+  </div>
+  <div class="trust-pills">
+    <div class="trust-pill"><div class="dot"></div> Delivered across UAE</div>
+    <div class="trust-pill"><div class="dot"></div> 200GSM premium print</div>
+    <div class="trust-pill"><div class="dot"></div> 500+ happy families</div>
+    <div class="trust-pill"><div class="dot"></div> 7-day delivery</div>
+  </div>
+</section>
+
+<!-- ── How it works ─────────────────────────── -->
+<section class="section steps-bg section-center" id="how-it-works">
+  <div class="eyebrow">How it works</div>
+  <h2>From photo to doorstep in 4 steps</h2>
+  <p class="section-sub">Takes less than 5 minutes to order. We handle everything else.</p>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <div class="step-icon">📚</div>
+      <div class="step-title">Pick a story theme</div>
+      <div class="step-desc">Browse our magical adventures and choose the one that fits your child best.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <div class="step-icon">✨</div>
+      <div class="step-title">Personalise it</div>
+      <div class="step-desc">Enter their name, age, and upload a photo. Our AI weaves them into the story.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <div class="step-icon">👀</div>
+      <div class="step-title">Preview your book</div>
+      <div class="step-desc">Read through the pages before ordering. Approve when you're happy.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">4</div>
+      <div class="step-icon">📦</div>
+      <div class="step-title">We print and ship</div>
+      <div class="step-desc">Premium 200GSM printing, shipped via Aramex across UAE in 7 business days.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Books ─────────────────────────────────── -->
+<section class="section section-center" id="books">
+  <div class="eyebrow">Our books</div>
+  <h2>Choose your child's adventure</h2>
+  <p class="section-sub">Every story is written and illustrated uniquely for your child by AI.</p>
+  <div class="books-grid" id="books-grid">
+    <!-- Populated by JS -->
+  </div>
+</section>
+
+<!-- ── Reviews ─────────────────────────────────── -->
+<section class="section section-center" id="reviews" style="background:#fff">
+  <div class="eyebrow">Reviews</div>
+  <h2>Families love MyStoryLand</h2>
+  <p class="section-sub">Real parents from across the UAE.</p>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"My daughter cried happy tears when she saw herself as the princess. We've read it every night this week. Absolutely magical quality."</p>
+      <div class="reviewer-row">
+        <div class="reviewer-avatar" style="background:#FFE8F5">👩</div>
+        <div><div class="reviewer-name">Fatima Al Rashid</div><div class="reviewer-city">Dubai</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"The illustrations were incredible — looked exactly like my son. Perfect Eid gift. The whole family gathered around to read it together."</p>
+      <div class="reviewer-row">
+        <div class="reviewer-avatar" style="background:#E6F1FB">👩‍💼</div>
+        <div><div class="reviewer-name">Nour Khalil</div><div class="reviewer-city">Abu Dhabi</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <p class="review-text">"Ordered for my niece in Sharjah. Arrived in 6 days, beautifully packaged. She won't let go of it. Already ordering another for my nephew!"</p>
+      <div class="reviewer-row">
+        <div class="reviewer-avatar" style="background:#DFF7F4">👩‍🦱</div>
+        <div><div class="reviewer-name">Layla Rahman</div><div class="reviewer-city">Sharjah</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA Banner ─────────────────────────────── -->
+<section class="cta-banner">
+  <h2>Give them a story they'll never forget</h2>
+  <p>The perfect gift for birthdays, Eid, or just because you love them.</p>
+  <button class="btn btn-white btn-primary" style="font-size:15px;padding:12px 32px" onclick="document.getElementById('books').scrollIntoView({behavior:'smooth'})">
+    <i class="ti ti-stars"></i> Create your book — from AED 149
+  </button>
+</section>
+
+<!-- ── Footer ─────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">📖 MyStoryLand</div>
+  <p style="margin-bottom:12px">Personalized storybooks for children across UAE</p>
+  <p>© 2024 MyStoryLand. All rights reserved. &nbsp;·&nbsp; UAE 🇦🇪 &nbsp;·&nbsp; Delivered by Aramex</p>
+</footer>
+
+<!-- ── Order Modal ────────────────────────────── -->
+<div class="modal-overlay" id="order-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Create your book</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Step bar -->
+      <div class="modal-steps" style="margin-bottom:24px">
+        <div class="ms" id="ms-1"><div class="ms-dot">1</div> <span class="ms-label">Personalise</span></div>
+        <div class="ms-line" id="msl-1"></div>
+        <div class="ms" id="ms-2"><div class="ms-dot">2</div> <span class="ms-label">Preview</span></div>
+        <div class="ms-line" id="msl-2"></div>
+        <div class="ms" id="ms-3"><div class="ms-dot">3</div> <span class="ms-label">Checkout</span></div>
+        <div class="ms-line" id="msl-3"></div>
+        <div class="ms" id="ms-4"><div class="ms-dot">4</div> <span class="ms-label">Done</span></div>
+      </div>
+
+      <!-- Order summary -->
+      <div class="modal-side">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:8px">Your order</div>
+        <div class="side-row"><span id="sum-book">Book title</span><span id="sum-price">AED —</span></div>
+        <div class="side-row"><span>Printing & delivery</span><span id="sum-shipping">AED 25</span></div>
+        <div class="side-total"><span>Total</span><span id="sum-total">AED —</span></div>
+      </div>
+
+      <!-- Step 1: Personalise -->
+      <div class="step-page active" id="step-1">
+        <div class="field">
+          <label>Child's name</label>
+          <input id="child-name" type="text" placeholder="e.g. Amayra">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Age</label>
+            <input id="child-age" type="number" min="1" max="12" placeholder="5">
+          </div>
+          <div class="field">
+            <label>Pronouns</label>
+            <select id="child-gender">
+              <option value="girl">She / Her</option>
+              <option value="boy">He / Him</option>
+              <option value="neutral">They / Them</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Something special about them (optional)</label>
+          <input type="text" placeholder="e.g. loves cats, wants to be an astronaut...">
+        </div>
+        <div class="field">
+          <label>Upload a photo</label>
+          <div class="photo-drop" onclick="fakeUpload(this)" id="photo-drop">
+            <div class="icon">📷</div>
+            <p>Tap to upload a clear face photo</p>
+            <small>JPG or PNG · max 10MB</small>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px" onclick="nextToPreview()">
+          Preview my book <i class="ti ti-arrow-right"></i>
+        </button>
+      </div>
+
+      <!-- Step 2: Preview -->
+      <div class="step-page" id="step-2">
+        <p style="font-size:13px;color:var(--text-3);margin-bottom:14px">Tap any page thumbnail to read it. Here's a preview of your personalised story.</p>
+        <div class="pg-main">
+          <div style="font-size:56px;margin-bottom:12px" id="prev-art">👑</div>
+          <p class="pg-story" id="prev-story">Your story preview will appear here...</p>
+        </div>
+        <div class="preview-grid">
+          <div class="pg-thumb sel" onclick="renderPreview(0,this)"><div class="pg-art">👑</div><small>Cover</small></div>
+          <div class="pg-thumb" onclick="renderPreview(1,this)"><div class="pg-art">🌅</div><small>Page 1</small></div>
+          <div class="pg-thumb" onclick="renderPreview(2,this)"><div class="pg-art">🗝️</div><small>Page 2</small></div>
+          <div class="pg-thumb" onclick="renderPreview(3,this)"><div class="pg-art">🐉</div><small>Page 3</small></div>
+          <div class="pg-thumb" onclick="renderPreview(4,this)"><div class="pg-art">🌟</div><small>Page 4</small></div>
+          <div class="pg-thumb" onclick="renderPreview(5,this)"><div class="pg-art">🏰</div><small>The end</small></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button class="btn btn-outline" onclick="goToStep(1)">Edit details</button>
+          <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="nextToCheckout()">
+            Looks great! <i class="ti ti-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: Checkout -->
+      <div class="step-page" id="step-3">
+        <div style="font-size:14px;font-weight:700;margin-bottom:14px">Delivery details</div>
+        <div class="field-row">
+          <div class="field"><label>Full name</label><input id="buyer-name" type="text" placeholder="Fatima Al Rashid"></div>
+          <div class="field"><label>WhatsApp number</label><input id="buyer-phone" type="tel" placeholder="+971 50 000 0000"></div>
+        </div>
+        <div class="field"><label>Delivery address</label><input id="buyer-addr" type="text" placeholder="Villa 12, Street 4, Jumeirah..."></div>
+        <div class="field">
+          <label>Emirate</label>
+          <select id="buyer-city">
+            <option>Dubai</option><option>Abu Dhabi</option><option>Sharjah</option>
+            <option>Ajman</option><option>Ras Al Khaimah</option><option>Fujairah</option><option>Umm Al Quwain</option>
+          </select>
+        </div>
+        <div style="font-size:14px;font-weight:700;margin:16px 0 10px">Payment</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+          <div style="border:2px solid var(--purple);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:13px;font-weight:700;color:var(--purple);display:flex;align-items:center;gap:8px;background:var(--purple-l)">
+            <i class="ti ti-credit-card"></i> Card
+          </div>
+          <div style="border:2px solid var(--border);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text-3);display:flex;align-items:center;gap:8px">
+            <i class="ti ti-device-mobile"></i> Tabby (BNPL)
+          </div>
+        </div>
+        <div class="field"><label>Card number</label><input type="text" placeholder="4242 4242 4242 4242"></div>
+        <div class="field-row">
+          <div class="field"><label>Expiry</label><input type="text" placeholder="MM/YY"></div>
+          <div class="field"><label>CVV</label><input type="text" placeholder="123"></div>
+        </div>
+        <div style="background:var(--purple-l);border-radius:10px;padding:12px 14px;margin-bottom:14px">
+          <div style="font-size:13px;font-weight:700;color:var(--purple);display:flex;justify-content:space-between">
+            <span>Order total</span><span id="co-total">AED —</span>
+          </div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">For: <span id="co-child" style="font-weight:700"></span> · <span id="co-book"></span></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;font-size:15px" onclick="placeOrder()">
+          <i class="ti ti-lock"></i> Place order — <span id="co-book-price"></span>
+        </button>
+        <p style="text-align:center;font-size:11px;color:var(--text-3);margin-top:10px"><i class="ti ti-lock"></i> Secured with SSL · Card details never stored</p>
+      </div>
+
+      <!-- Step 4: Success -->
+      <div class="step-page" id="step-4">
+        <div class="success-wrap">
+          <div class="success-icon">🎉</div>
+          <div class="success-title">Your book is on its way!</div>
+          <div class="success-sub">We've started creating your personalised storybook. You'll get a WhatsApp update when it's printed and shipped.</div>
+          <div class="order-ref" id="success-ref">MSL-000000</div>
+          <table class="confirm-table">
+            <tr><td>Book</td><td id="success-book">—</td></tr>
+            <tr><td>For</td><td id="success-child">—</td></tr>
+            <tr><td>Estimated delivery</td><td>7 business days</td></tr>
+            <tr><td>Total charged</td><td id="success-total" style="color:var(--purple)">—</td></tr>
+          </table>
+          <button class="btn btn-primary" style="margin-top:20px" onclick="closeModal()">
+            <i class="ti ti-heart"></i> Thank you!
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/storefront.js"></script>
+</body>
+</html>
