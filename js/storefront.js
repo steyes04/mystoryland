@@ -36,12 +36,12 @@ const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GE
 async function generateIllustration(photoDataUrl, sceneDescription) {
   if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY') {
     console.warn('Gemini API key not set — using placeholder art instead.');
-    return null;
+    return { error: 'API key not set' };
   }
 
   // Strip the data URL prefix to get raw base64 + mime type
   const match = photoDataUrl.match(/^data:(image\/\w+);base64,(.+)$/);
-  if (!match) return null;
+  if (!match) return { error: 'Invalid photo format' };
   const [, mimeType, base64Data] = match;
 
   const prompt = `Transform this child's photo into a soft, dreamy children's storybook watercolor illustration. ` +
@@ -249,13 +249,13 @@ async function renderPreview(pageIdx, thumbEl) {
 
   if (state.previewPage !== requestedPage) return; // user moved on already
 
-  if (result) {
-    state.generatedPages[pageIdx] = result;
-    showGeneratedImage(result);
+  if (result && result.url) {
+    state.generatedPages[pageIdx] = result.url;
+    showGeneratedImage(result.url);
   } else {
     // Generation failed or quota hit — fall back gracefully to emoji
     document.getElementById('prev-art').outerHTML = `<div style="font-size:56px;margin-bottom:12px" id="prev-art">${s.art}</div>`;
-    showToastMsg('Could not generate illustration right now (free quota may be reached). Showing placeholder.');
+    showToastMsg('AI generation failed: ' + (result?.error || 'unknown error') + '. Showing placeholder.');
   }
 }
 
