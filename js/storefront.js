@@ -25,7 +25,7 @@ async function sbFetch(path, opts = {}) {
    ⚠️ Before going live with real customers, move this call to a backend
    /serverless function so the key isn't exposed in client-side JS.
 ─────────────────────────────────────────────────────────────────── */
-const GEMINI_API_KEY = 'AQ.Ab8RN6Jw7lBkOt13pewyW3_CuBESMG9Mimf-XnqgOxi5qFVoig'; // ← paste your free AI Studio key here
+const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; // ← paste your free AI Studio key here
 const GEMINI_MODEL = 'gemini-2.5-flash-image'; // free-tier "Nano Banana" model
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
@@ -60,26 +60,32 @@ async function generateIllustration(photoDataUrl, sceneDescription) {
             { text: prompt },
             { inline_data: { mime_type: mimeType, data: base64Data } }
           ]
-        }]
+        }],
+        generationConfig: {
+          responseModalities: ['TEXT', 'IMAGE']
+        }
       })
     });
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       console.error('Gemini API error:', res.status, err);
-      return null;
+      return { error: err?.error?.message || `HTTP ${res.status}` };
     }
 
     const data = await res.json();
     const parts = data?.candidates?.[0]?.content?.parts || [];
     const imagePart = parts.find(p => p.inlineData || p.inline_data);
     const inline = imagePart?.inlineData || imagePart?.inline_data;
-    if (!inline) return null;
+    if (!inline) {
+      console.error('Gemini returned no image part. Full response:', data);
+      return { error: 'No image returned (model may have refused or only returned text)' };
+    }
 
-    return `data:${inline.mimeType || inline.mime_type};base64,${inline.data}`;
+    return { url: `data:${inline.mimeType || inline.mime_type};base64,${inline.data}` };
   } catch (e) {
     console.error('Gemini request failed:', e);
-    return null;
+    return { error: e.message || 'Network/CORS error' };
   }
 }
 
