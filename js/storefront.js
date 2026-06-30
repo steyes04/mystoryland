@@ -25,7 +25,7 @@ async function sbFetch(path, opts = {}) {
    ⚠️ Before going live with real customers, move this call to a backend
    /serverless function so the key isn't exposed in client-side JS.
 ─────────────────────────────────────────────────────────────────── */
-const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; // ← paste your free AI Studio key here
+const GEMINI_API_KEY = 'AQ.Ab8RN6Jw7lBkOt13pewyW3_CuBESMG9Mimf-XnqgOxi5qFVoig'; // ← paste your free AI Studio key here
 const GEMINI_MODEL = 'gemini-2.5-flash-image'; // free-tier "Nano Banana" model
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
 
