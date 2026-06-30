@@ -18,6 +18,71 @@ async function sbFetch(path, opts = {}) {
   return res.json();
 }
 
+/* ── Gemini (Nano Banana) config ───────────────────────────────────
+   FREE TIER — for mockups/testing only. Daily quota is limited and
+   fluctuates (Google has cut it from ~100/day to as low as ~20/day).
+   Get a free key at https://aistudio.google.com/apikey (no card needed).
+   ⚠️ Before going live with real customers, move this call to a backend
+   /serverless function so the key isn't exposed in client-side JS.
+─────────────────────────────────────────────────────────────────── */
+const GEMINI_API_KEY = 'AQ.Ab8RN6Jw7lBkOt13pewyW3_CuBESMG9Mimf-XnqgOxi5qFVoig'; // ← paste your free AI Studio key here
+const GEMINI_MODEL = 'gemini-2.5-flash-image'; // free-tier "Nano Banana" model
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
+/**
+ * Sends the child's photo + a scene description to Gemini and returns
+ * a base64 data URL of the generated illustration, or null on failure.
+ */
+async function generateIllustration(photoDataUrl, sceneDescription) {
+  if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY') {
+    console.warn('Gemini API key not set — using placeholder art instead.');
+    return null;
+  }
+
+  // Strip the data URL prefix to get raw base64 + mime type
+  const match = photoDataUrl.match(/^data:(image\/\w+);base64,(.+)$/);
+  if (!match) return null;
+  const [, mimeType, base64Data] = match;
+
+  const prompt = `Transform this child's photo into a soft, dreamy children's storybook watercolor illustration. ` +
+    `Keep the child's facial features, hairstyle, and likeness clearly recognizable. ` +
+    `Style: gentle watercolor textures, pastel magical colors, whimsical sparkles, soft glowing background. ` +
+    `Scene: ${sceneDescription}. ` +
+    `Full body or 3/4 view, picture-book illustration quality, warm and joyful mood.`;
+
+  try {
+    const res = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: prompt },
+            { inline_data: { mime_type: mimeType, data: base64Data } }
+          ]
+        }]
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      console.error('Gemini API error:', res.status, err);
+      return null;
+    }
+
+    const data = await res.json();
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const imagePart = parts.find(p => p.inlineData || p.inline_data);
+    const inline = imagePart?.inlineData || imagePart?.inline_data;
+    if (!inline) return null;
+
+    return `data:${inline.mimeType || inline.mime_type};base64,${inline.data}`;
+  } catch (e) {
+    console.error('Gemini request failed:', e);
+    return null;
+  }
+}
+
 /* ── State ─── */
 let state = {
   selectedBook: null,
@@ -26,16 +91,17 @@ let state = {
   childAge: '',
   childGender: 'girl',
   previewPage: 0,
-  photoDataUrl: null
+  photoDataUrl: null,
+  generatedPages: {} // cache: pageIdx -> generated image data URL
 };
 
 const stories = [
-  { art: '👑', text: 'Once upon a time, in a kingdom where the stars danced at sunrise, a brave little princess named {name} woke to find a magical golden crown at the foot of her bed...' },
-  { art: '🌅', text: '{name} stepped outside and gasped — the whole village was sparkling with light, and a tiny fox sat waiting with a rolled-up scroll tied with ribbon.' },
-  { art: '🗝️', text: 'The scroll read: "Only the child with the kindest heart can unlock the Crystal Tower." {name} held the ancient key tightly and whispered, "I can do this."' },
-  { art: '🐉', text: 'At the mountain\'s edge stood a dragon — but it wasn\'t scary at all. It bowed its great head and said, "I\'ve been waiting for you, {name}."' },
-  { art: '🌟', text: 'Together they soared above the clouds. {name} laughed as the stars reached out to give her a high five, one by one.' },
-  { art: '🏰', text: 'Back home, the whole kingdom cheered. And that night as {name} fell asleep, she knew — every great adventure starts with believing in yourself. The End.' }
+  { art: '👑', scene: 'sitting on a cloud at sunrise with a golden crown floating beside them, magical sparkles all around', text: 'Once upon a time, in a kingdom where the stars danced at sunrise, a brave little hero named {name} woke to find a magical golden crown at the foot of their bed...' },
+  { art: '🌅', scene: 'standing in a sparkling village at dawn, looking at a tiny fox holding a rolled-up scroll', text: '{name} stepped outside and gasped — the whole village was sparkling with light, and a tiny fox sat waiting with a rolled-up scroll tied with ribbon.' },
+  { art: '🗝️', scene: 'holding a glowing ancient key in front of a crystal tower, determined and brave expression', text: 'The scroll read: "Only the child with the kindest heart can unlock the Crystal Tower." {name} held the ancient key tightly and whispered, "I can do this."' },
+  { art: '🐉', scene: 'standing beside a friendly, colorful dragon at the edge of a mountain, both smiling', text: 'At the mountain\'s edge stood a dragon — but it wasn\'t scary at all. It bowed its great head and said, "I\'ve been waiting for you, {name}."' },
+  { art: '🌟', scene: 'soaring through clouds and stars on the dragon\'s back, laughing joyfully, stars twinkling around', text: 'Together they soared above the clouds. {name} laughed as the stars reached out to give them a high five, one by one.' },
+  { art: '🏰', scene: 'standing proudly in front of a cheering kingdom and castle at golden sunset, arms raised in triumph', text: 'Back home, the whole kingdom cheered. And that night as {name} fell asleep, they knew — every great adventure starts with believing in yourself. The End.' }
 ];
 
 /* ── Book catalog (loaded from localStorage/admin edits) ─── */
@@ -135,18 +201,76 @@ function nextToPreview() {
   state.childName   = name;
   state.childAge    = age;
   state.childGender = document.getElementById('child-gender').value;
-  renderPreview(0);
+  state.generatedPages = {}; // reset cache for a fresh personalization
   goToStep(2);
+  renderPreview(0);
 }
 
-/* ── Step 2: Preview ─── */
-function renderPreview(pageIdx) {
+/* ── Step 2: Preview (with real AI illustration generation) ─── */
+async function renderPreview(pageIdx, thumbEl) {
   state.previewPage = pageIdx;
   const s = stories[pageIdx];
   const name = state.childName || 'your child';
-  document.getElementById('prev-art').textContent = s.art;
+
+  // Update story text + selected thumbnail immediately
   document.getElementById('prev-story').innerHTML = s.text.replace(/{name}/g, `<span class="pg-hero-name">${name}</span>`);
   document.querySelectorAll('.pg-thumb').forEach((t, i) => t.classList.toggle('sel', i === pageIdx));
+
+  const artEl = document.getElementById('prev-art');
+  const mainEl = document.getElementById('preview-main') || artEl.closest('.pg-main');
+
+  // Already generated this page? Show cached image instantly.
+  if (state.generatedPages[pageIdx]) {
+    showGeneratedImage(state.generatedPages[pageIdx]);
+    return;
+  }
+
+  // No photo uploaded — fall back to emoji placeholder, no API call needed.
+  if (!state.photoDataUrl) {
+    artEl.outerHTML = `<div style="font-size:56px;margin-bottom:12px" id="prev-art">${s.art}</div>`;
+    return;
+  }
+
+  // Show loading state while we call the AI
+  artEl.outerHTML = `
+    <div id="prev-art" style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:8px">
+      <div class="ai-spinner"></div>
+      <small style="color:var(--text-3);font-weight:600">✨ Illustrating ${name}'s page...</small>
+    </div>`;
+
+  const requestedPage = pageIdx; // guard against race if user taps another thumb mid-generation
+  const result = await generateIllustration(state.photoDataUrl, s.scene);
+
+  if (state.previewPage !== requestedPage) return; // user moved on already
+
+  if (result) {
+    state.generatedPages[pageIdx] = result;
+    showGeneratedImage(result);
+  } else {
+    // Generation failed or quota hit — fall back gracefully to emoji
+    document.getElementById('prev-art').outerHTML = `<div style="font-size:56px;margin-bottom:12px" id="prev-art">${s.art}</div>`;
+    showToastMsg('Could not generate illustration right now (free quota may be reached). Showing placeholder.');
+  }
+}
+
+function showGeneratedImage(dataUrl) {
+  const artEl = document.getElementById('prev-art');
+  artEl.outerHTML = `
+    <img id="prev-art" src="${dataUrl}" alt="Storybook illustration"
+      style="width:100%;max-width:240px;border-radius:14px;margin-bottom:12px;box-shadow:0 6px 20px rgba(124,92,191,.18)">`;
+}
+
+function showToastMsg(msg) {
+  let t = document.getElementById('msl-toast-mini');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'msl-toast-mini';
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:10px 18px;border-radius:50px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:opacity .25s;max-width:90vw;text-align:center';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  setTimeout(() => { t.style.opacity = '0'; }, 3200);
 }
 
 /* ── Step 2 → 3: Checkout ─── */
